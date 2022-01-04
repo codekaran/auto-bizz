@@ -53,14 +53,21 @@ const handleImageUpload = async (ad, sellerId) => {
     // adding a sleep time to rename the images
     const timer = (ms) => new Promise((res) => setTimeout(res, ms));
     console.log(ad.images);
+    let i = 0;
     for (let image of ad.images) {
       console.log("renaming ", image);
+      let newName = (+new Date()).toString(36) + ".jpg";
       fs.renameSync(
         "./unzip-files/" + sellerId + "/" + image,
-        "./unzip-files/" + sellerId + "/" + (+new Date()).toString(36) + ".jpg"
+        "./unzip-files/" + sellerId + "/" + newName
       );
-      await timer(3000);
+      await timer(100);
+      // changing the name of the image in file
+      ad.images[i] = newName;
+      i++;
     }
+    console.log(ad);
+    return ad;
   }
 };
 
@@ -91,8 +98,8 @@ const handleMultipleAdUpload = async (req, res) => {
         // stroing the ad one by one
         for (let ad of adData) {
           ad = await handleImageUpload(ad, sellerId);
-          // let result = await adUploadCommonLogic(res, req, ad, "multiple");
-          // console.log(result);
+          let result = await adUploadCommonLogic(res, req, ad, "multiple");
+          console.log(result);
         }
         // Everything went fine.
       } catch (error) {
