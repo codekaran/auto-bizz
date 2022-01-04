@@ -9,6 +9,7 @@ const variables = require("../helperFunctions/variables");
 
 // ***************** multer config *****************
 const multer = require("multer");
+const path = require("path");
 // const nonAssociatedImagesSchema = require("../models/nonAssociatedImages");
 
 const upload = multer({ storage: variables.storage }).array("image"); // Form data should have image as fieldname
@@ -24,8 +25,15 @@ const handleSingleUpload = async (req, res) => {
       // generating name from timestamp.
 
       fs.writeFileSync("./uploads/" + imageName, req.body);
+      let finalImage = "";
+      if (imageSize < 2 * 1024 * 1024) {
+        finalImage = compressImage(imageName, imageSize);
+        await unlinkFile(path.join(__dirname, "uploads", imageName));
+      } else {
+        finalImage = imageName;
+      }
 
-      let url = await s3.uploadSingleFile(imageName);
+      let url = await s3.uploadSingleFile(finalImage);
       await db.saveNonAssociatedImages(url);
       res.send({ baseUrl: url }).status(200);
     } else {
@@ -156,3 +164,28 @@ const handleAssociate = async (req, res) => {
 };
 
 exports.handleAssociate = handleAssociate;
+
+// ***************** compress image under 200 kb *****************
+const compressImage = (inputImage, imageSize) => {
+  const inputImagePath = path.join(__dirname, "uploads", inputImage);
+  const ouputImage = (+new Date()).toString(36) + ".jpeg";
+  const outputImagePath = path.join(__dirname, "uploads", ouputImage);
+  const quality =
+    imageSize < 0.5 * 1048576 ? 50 : imageSize < 1 * 1048576 ? 30 : 15;
+
+  sharp(inputImagePath)
+    .jpeg({
+      quality: quality,
+      chromaSubsampling: "4:4:4",
+    })
+    .toFile(outputImagePath, (err, info) => {
+      if (err) {
+        console.log("Failed to compress image");
+      } else {
+        console.log("Compression successful");
+        return ouputImage;
+      }
+    });
+};
+
+exports.compressImage = compressImage;
