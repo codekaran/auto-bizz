@@ -73,6 +73,7 @@ const handleImageUpload = async (ad, sellerId) => {
 
 const handleMultipleAdUpload = async (req, res) => {
   try {
+    // uploading zip file using multer
     upload(req, res, async function (err) {
       if (err instanceof multer.MulterError) {
         // A Multer error occurred when uploading.
@@ -101,7 +102,6 @@ const handleMultipleAdUpload = async (req, res) => {
           let result = await adUploadCommonLogic(res, req, ad, "multiple");
           console.log(result);
         }
-        // Everything went fine.
       } catch (error) {
         console.log(error);
         res.status(500).send("Somethig  went wrong");
