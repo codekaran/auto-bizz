@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const indexRouter = require("./routes/index");
-require("./data/connection");
+// require("./data/connection");
 require("./data/sqlConnection");
 
 var bodyParser = require("body-parser");
