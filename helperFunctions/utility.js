@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const sharp = require("sharp");
 
 // function returns true/false based on primary key value in table.
 // input PK value, model to searched
@@ -28,14 +29,11 @@ exports.recordExists = recordExists;
 // checking the image size and image type.
 async function isImageValid(imageFormat, imageSize) {
   console.log("Checking the image size and image type");
-  // let imageFormat = req.headers["content-type"].split("/")[1].toLowerCase();
   let result = false;
-  // let imageSize = req.body.length;
   if (
     (imageFormat === "jpg" || imageFormat === "jpeg") &&
-    imageSize <= 2097152
+    imageSize <= 2000096
   ) {
-    console.log("pass");
     result = true;
   }
   return result;
@@ -80,6 +78,7 @@ async function adBelongsToSeller(model, adId, sellerId) {
 exports.adBelongsToSeller = adBelongsToSeller;
 
 // Delete images
+// images - array of image names
 async function deleteImages(images) {
   console.log("Deleting the images from server");
   console.log(images);
@@ -88,6 +87,47 @@ async function deleteImages(images) {
   }
 }
 exports.deleteImages = deleteImages;
+
+// ***************** compress image under 200 kb *****************
+const compressImage = async (inputImage, imageSize, sellerId) => {
+  return new Promise((resolve, reject) => {
+    if (imageSize > 200000) {
+      console.log("image size is > 200 kb compressing it");
+      const inputImagePath = path.join(__dirname, "../", "uploads", inputImage);
+      const ouputImage = sellerId
+        ? sellerId + (+new Date()).toString(36) + ".jpeg"
+        : (+new Date()).toString(36) + ".jpeg";
+      const outputImagePath = path.join(
+        __dirname,
+        "../",
+        "uploads",
+        ouputImage
+      );
+      const quality =
+        imageSize < 0.5 * 1048576 ? 50 : imageSize < 1 * 1048576 ? 30 : 15;
+      sharp(inputImagePath)
+        .jpeg({
+          quality: quality,
+          chromaSubsampling: "4:4:4",
+        })
+        .toFile(outputImagePath, (err, info) => {
+          if (err) {
+            console.log(err);
+            reject("Failed to compress image");
+          } else {
+            console.log("Compression successful");
+            console.log("Size after compression ", info.size / 1000 + " kb");
+            resolve(ouputImage);
+            // delete the large image
+            deleteImages([inputImage]);
+          }
+        });
+    } else {
+      resolve(inputImage);
+    }
+  });
+};
+exports.compressImage = compressImage;
 
 // move images
 // async function moveImages(sellerId, adId, images) {

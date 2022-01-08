@@ -6,6 +6,7 @@ const s3 = require("../helperFunctions/s3_file_upload");
 const db = require("../data/databaseHandle");
 const nonAssociatedImages = require("../models/nonAssociatedImages");
 const variables = require("../helperFunctions/variables");
+const sharp = require("sharp");
 
 // ***************** multer config *****************
 const multer = require("multer");
@@ -21,18 +22,12 @@ const handleSingleUpload = async (req, res) => {
   try {
     let imageFormat = req.headers["content-type"].split("/")[1].toLowerCase();
     let imageSize = req.body.length;
+    console.log("image Size : ", imageSize / 1000 + " kb");
     if (utils.isImageValid(imageFormat, imageSize)) {
-      // generating name from timestamp.
-
+      console.log("image is valid");
       fs.writeFileSync("./uploads/" + imageName, req.body);
-      let finalImage = "";
-      if (imageSize < 2 * 1024 * 1024) {
-        finalImage = compressImage(imageName, imageSize);
-        await unlinkFile(path.join(__dirname, "uploads", imageName));
-      } else {
-        finalImage = imageName;
-      }
-
+      let finalImage = await utils.compressImage(imageName, imageSize);
+      console.log("outside the function");
       let url = await s3.uploadSingleFile(finalImage);
       await db.saveNonAssociatedImages(url);
       res.send({ baseUrl: url }).status(200);
@@ -73,7 +68,12 @@ const handleMultipleUpload = async (req, res) => {
           let imageSize = image.size;
           // checking for the image criteria(size and format)
           if (await utils.isImageValid(imageFormat, imageSize)) {
-            imagesForS3.push(image.filename);
+            let compressedImage = await utils.compressImage(
+              image.filename,
+              imageSize,
+              sellerId
+            );
+            imagesForS3.push(compressedImage);
           } else {
             rejectedImages.push(image.filename);
           }
@@ -164,28 +164,3 @@ const handleAssociate = async (req, res) => {
 };
 
 exports.handleAssociate = handleAssociate;
-
-// ***************** compress image under 200 kb *****************
-const compressImage = (inputImage, imageSize) => {
-  const inputImagePath = path.join(__dirname, "uploads", inputImage);
-  const ouputImage = (+new Date()).toString(36) + ".jpeg";
-  const outputImagePath = path.join(__dirname, "uploads", ouputImage);
-  const quality =
-    imageSize < 0.5 * 1048576 ? 50 : imageSize < 1 * 1048576 ? 30 : 15;
-
-  sharp(inputImagePath)
-    .jpeg({
-      quality: quality,
-      chromaSubsampling: "4:4:4",
-    })
-    .toFile(outputImagePath, (err, info) => {
-      if (err) {
-        console.log("Failed to compress image");
-      } else {
-        console.log("Compression successful");
-        return ouputImage;
-      }
-    });
-};
-
-exports.compressImage = compressImage;
