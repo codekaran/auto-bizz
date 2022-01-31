@@ -42,7 +42,8 @@ exports.uploadSingleFile = uploadSingleFile;
 
 // upload multiple images
 // files - list of name of the images to be uploaded
-async function uploadMultipleFile(files) {
+// path - where the image is uploaded
+async function uploadMultipleFile(files, path) {
   let remainingList = [];
   let imageURLS = [];
   let totalList = [];
@@ -53,7 +54,7 @@ async function uploadMultipleFile(files) {
   console.log(totalList);
   for (let file of files) {
     console.log(file);
-    const fileStream = fs.createReadStream("./uploads/" + file);
+    const fileStream = fs.createReadStream(path + file);
     const uploadParams = {
       Bucket: bucket_name,
       Body: fileStream,
@@ -66,7 +67,7 @@ async function uploadMultipleFile(files) {
     remainingList = totalList.filter((element) => element != file);
 
     // delete the file after loading
-    await unlinkFile("./uploads/" + file);
+    await unlinkFile(path + file);
     totalList = remainingList;
   }
   console.log("image uploaded");

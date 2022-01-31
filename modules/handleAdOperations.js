@@ -13,7 +13,7 @@ const upload = multer({ storage: variables.zipStorage }).single("zip"); // Form 
 const adUploadCommonLogic = async (res, req, adData, uploadType) => {
   let sellerId = req.params.sellerId;
   console.log("#########uploading#########");
-  console.log(adData);
+  // console.log(adData);
   // chassis number or any other unique field
   let hashKey = sha1(
     adData.make + adData.constructionYear + adData.model + adData.mileage
@@ -56,12 +56,12 @@ const handleImageUpload = async (ad, sellerId) => {
     let i = 0;
     for (let image of ad.images) {
       console.log("renaming ", image);
-      let newName = (+new Date()).toString(36) + ".jpg";
+      let newName = sellerId + (+new Date()).toString(36) + ".jpg";
       fs.renameSync(
         "./unzip-files/" + sellerId + "/" + image,
         "./unzip-files/" + sellerId + "/" + newName
       );
-      await timer(100);
+      await timer(10);
       // changing the name of the image in file
       ad.images[i] = newName;
       i++;
@@ -82,6 +82,7 @@ const handleMultipleAdUpload = async (req, res) => {
         // An unknown error occurred when uploading.
         console.log(err);
       }
+      // added try catch for inner function
       try {
         let sellerId = req.params.sellerId;
         console.log(req.file);
@@ -96,13 +97,26 @@ const handleMultipleAdUpload = async (req, res) => {
           }
         }
         let adData = JSON.parse(adFile.data);
-        // stroing the ad one by one
+        // storing the ad one by one
+        let adNumber = 1;
+        let adUploadFinalStatus = {};
         for (let ad of adData) {
-          ad = await handleImageUpload(ad, sellerId);
-          let result = await adUploadCommonLogic(res, req, ad, "multiple");
-          console.log(result);
+          try {
+            ad = await handleImageUpload(ad, sellerId);
+            let result = await adUploadCommonLogic(res, req, ad, "multiple");
+            console.log(
+              "$$$$$$$$$$$$$$$$$$$ upload result %%%%%%%%%%%%%%%%%%%"
+            );
+            adUploadFinalStatus[adNumber] = result;
+          } catch (error) {
+            console.log("error in the loop");
+            console.log(error);
+            adUploadFinalStatus[adNumber] = "something went wrong";
+          }
         }
+        res.status(500).send(adUploadFinalStatus);
       } catch (error) {
+        console.log("error in uploading");
         console.log(error);
         res.status(500).send("Somethig  went wrong");
       }

@@ -137,7 +137,7 @@ async function handleWhenSumLesserThanLimit(
   // when sum of prev and new images is less than limit
   let urls = "";
   if (callType == "upload") {
-    urls = await s3.uploadMultipleFile(imageList);
+    urls = await s3.uploadMultipleFile(imageList, "./uploads/");
   } else {
     // when the call type is associate
     urls = imageList;
