@@ -10,10 +10,10 @@ const fs = require("fs");
 const variables = require("../helperFunctions/variables");
 const upload = multer({ storage: variables.zipStorage }).single("zip"); // Form data should have zip as fieldname
 
+// ad upload function for single and multiple ads.
 const adUploadCommonLogic = async (res, req, adData, uploadType) => {
   let sellerId = req.params.sellerId;
   console.log("#########uploading#########");
-  // console.log(adData);
   // chassis number or any other unique field
   let hashKey = sha1(
     adData.make + adData.constructionYear + adData.model + adData.mileage
@@ -46,7 +46,7 @@ const handleAdUpload = async (req, res) => {
 exports.handleAdUpload = handleAdUpload;
 
 // ************************* Upload multiple ads ********************
-
+// renames the images name in ad file => upload it to s3 => returns updated ad.
 const handleImageUpload = async (ad, sellerId) => {
   console.log("modifying images");
   if (ad.images.length > 0) {
@@ -62,13 +62,28 @@ const handleImageUpload = async (ad, sellerId) => {
         "./unzip-files/" + sellerId + "/" + newName
       );
       await timer(10);
+      let s3Url = await uploadImageToS3(
+        "./unzip-files/" + sellerId + "/",
+        newName
+      );
       // changing the name of the image in file
-      ad.images[i] = newName;
+      ad.images[i] = s3Url;
       i++;
     }
     console.log(ad);
     return ad;
   }
+};
+
+// uploads zipped images to s3
+const uploadImageToS3 = async (pathOfFile, fileName) => {
+  let imageSize = fs.statSync(path).size / 1000;
+  console.log("image Size : ", imageSize + " kb");
+  if (utils.isImageValid("jpg", imageSize)) {
+    console.log("image is valid");
+  }
+
+  return "test/path";
 };
 
 const handleMultipleAdUpload = async (req, res) => {
@@ -101,18 +116,20 @@ const handleMultipleAdUpload = async (req, res) => {
         let adNumber = 1;
         let adUploadFinalStatus = {};
         for (let ad of adData) {
+          // try catch block to check if any of the ad upload fails
           try {
             ad = await handleImageUpload(ad, sellerId);
             let result = await adUploadCommonLogic(res, req, ad, "multiple");
             console.log(
               "$$$$$$$$$$$$$$$$$$$ upload result %%%%%%%%%%%%%%%%%%%"
             );
-            adUploadFinalStatus[adNumber] = result;
+            adUploadFinalStatus["ad " + adNumber] = result;
           } catch (error) {
-            console.log("error in the loop");
+            console.log("error in the loop ", adNumber);
             console.log(error);
-            adUploadFinalStatus[adNumber] = "something went wrong";
+            adUploadFinalStatus["ad " + adNumber] = "something went wrong";
           }
+          adNumber += 1;
         }
         res.status(500).send(adUploadFinalStatus);
       } catch (error) {

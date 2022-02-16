@@ -3,15 +3,30 @@ const fs = require("fs");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    if (!fs.existsSync("uploads/")) {
-      fs.mkdirSync("uploads/", {
-        recursive: true,
-      });
+    if (
+      file.mimetype === "image/jpg" ||
+      file.mimetype === "image/jpeg" ||
+      file.mimetype === "image/png"
+    ) {
+      console.log("$$$$$$$$$$inside multer variable setting " + req);
+      if (!fs.existsSync("images-uploads/")) {
+        fs.mkdirSync("images-uploads/", {
+          recursive: true,
+        });
+      }
+      cb(null, "images-uploads/");
     }
-    cb(null, "uploads/");
+    if (file.mimetype === "application/zip") {
+      if (!fs.existsSync("zip-uploads/")) {
+        fs.mkdirSync("zip-uploads/", {
+          recursive: true,
+        });
+      }
+      cb(null, "zip-uploads/");
+    }
   },
   filename: function (req, file, cb) {
-    cb(null, req.params.sellerId + (+new Date()).toString(36) + ".jpg");
+    cb(null, (+new Date()).toString(36) + file.originalname);
   },
 });
 
@@ -27,7 +42,7 @@ const zipStorage = multer.diskStorage({
     cb(null, "zip-uploads/");
   },
   filename: function (req, file, cb) {
-    cb(null, (+new Date()).toString(36) + ".zip");
+    cb(null, (+new Date()).toString(36) + file.originalname);
   },
 });
 

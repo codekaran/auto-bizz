@@ -28,9 +28,9 @@ const handleSingleUpload = async (req, res) => {
       fs.writeFileSync("./uploads/" + imageName, req.body);
       let finalImage = await utils.compressImage(imageName, imageSize);
       console.log("outside the function");
-      let url = await s3.uploadSingleFile(finalImage);
+      let url = await s3.uploadSingleFile("./uploads/", finalImage);
       await db.saveNonAssociatedImages(url);
-      res.send({ baseUrl: url }).status(200);
+      res.status(200).send({ baseUrl: url });
     } else {
       res.send("Please Upload image following the proper criteria").status(300);
     }
@@ -48,61 +48,61 @@ exports.handleSingleUpload = handleSingleUpload;
 const handleMultipleUpload = async (req, res) => {
   let adId = req.params.adId;
   let sellerId = req.params.sellerId;
+  console.log(req.files);
+  // await upload(req, res, async (err) => {
+  //   if (err instanceof multer.MulterError) {
+  //     res.send(err);
+  //   } else if (err) {
+  //     console.log(err);
+  //     res.send(err);
+  //   }
+  //   // Everything went fine.
+  //   else if (req.files) {
+  //     console.log(req.files);
+  //     try {
+  //       let imagesUploadedOnServer = [];
+  //       let imagesForS3 = [];
+  //       let rejectedImages = [];
+  //       for (let image of req.files) {
+  //         let imageFormat = image["mimetype"].split("/")[1].toLowerCase();
+  //         let imageSize = image.size;
+  //         // checking for the image criteria(size and format)
+  //         if (await utils.isImageValid(imageFormat, imageSize)) {
+  //           let compressedImage = await utils.compressImage(
+  //             image.filename,
+  //             imageSize,
+  //             sellerId
+  //           );
+  //           imagesForS3.push(compressedImage);
+  //         } else {
+  //           rejectedImages.push(image.filename);
+  //         }
+  //       }
 
-  await upload(req, res, async (err) => {
-    if (err instanceof multer.MulterError) {
-      res.send(err);
-    } else if (err) {
-      console.log(err);
-      res.send(err);
-    }
-    // Everything went fine.
-    else if (req.files) {
-      console.log(req.files);
-      try {
-        let imagesUploadedOnServer = [];
-        let imagesForS3 = [];
-        let rejectedImages = [];
-        for (let image of req.files) {
-          let imageFormat = image["mimetype"].split("/")[1].toLowerCase();
-          let imageSize = image.size;
-          // checking for the image criteria(size and format)
-          if (await utils.isImageValid(imageFormat, imageSize)) {
-            let compressedImage = await utils.compressImage(
-              image.filename,
-              imageSize,
-              sellerId
-            );
-            imagesForS3.push(compressedImage);
-          } else {
-            rejectedImages.push(image.filename);
-          }
-        }
+  //       // Deleting the invalid(size & format) images
+  //       if (rejectedImages.length > 0) {
+  //         console.log("Deleting the rejected images");
+  //         await utils.deleteImages(rejectedImages);
+  //       }
 
-        // Deleting the invalid(size & format) images
-        if (rejectedImages.length > 0) {
-          console.log("Deleting the rejected images");
-          await utils.deleteImages(rejectedImages);
-        }
-
-        // checking if the ad id belong to the seller
-        if (await utils.recordExists({ id: adId, sellerId: sellerId }, AD)) {
-          // pushing the image ref in the data base
-          console.log("ad belongs exists");
-          await db.addImagesToAd(adId, imagesForS3, res, "upload");
-        } else {
-          // delete images from the server when ad id is invalid
-          await utils.deleteImages(imagesForS3);
-          res.send("Invalid Ad Id").status(400);
-        }
-      } catch (error) {
-        console.log(error);
-        res.send(error);
-      }
-    } else {
-      res.send("No images were uploaded");
-    }
-  });
+  //       // checking if the ad id belong to the seller
+  //       if (await utils.recordExists({ id: adId, sellerId: sellerId }, AD)) {
+  //         // pushing the image ref in the data base
+  //         console.log("ad belongs exists");
+  //         await db.addImagesToAd(adId, imagesForS3, res, "upload");
+  //       } else {
+  //         // delete images from the server when ad id is invalid
+  //         await utils.deleteImages(imagesForS3);
+  //         res.send("Invalid Ad Id").status(400);
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //       res.send(error);
+  //     }
+  //   } else {
+  //     res.send("No images were uploaded");
+  //   }
+  // });
 };
 
 exports.handleMultipleUpload = handleMultipleUpload;

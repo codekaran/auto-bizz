@@ -38,13 +38,6 @@ const sellerAuth = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     res.status(500).send("Something went wrong");
-    // when the id is invalid mongo throws cast error.
-    // if (error.name === "CastError") {
-    //   res.send("invalid seller id").status(400);
-    // } else {
-    //   console.log(error);
-    //   res.send("Somethig  went wrong").status(500);
-    // }
   }
 };
 

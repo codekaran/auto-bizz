@@ -21,15 +21,3 @@ const handleUserRegisteration = async (req, res) => {
   }
 };
 exports.handleUserRegisteration = handleUserRegisteration;
-// try{
-//   let sellerData = req.body;
-//   let isSellerUnique = await validateSeller.dublicateCheck(sellerData);
-//   console.log(isSellerUnique);
-//   if (isSellerUnique) {
-//     let id = await mongoDB.storeSellerDetails(sellerData);
-//     return id;
-//   } else {
-//     return "";
-//   }
-// }
-// catch (error) {}

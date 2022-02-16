@@ -1,6 +1,12 @@
 const express = require("express");
 const app = express();
-const indexRouter = require("./routes/index");
+const sellerRouter = require("./routes/seller");
+const adRouter = require("./routes/ads");
+const imageRouter = require("./routes/images");
+const multer = require("multer");
+const variables = require("./helperFunctions/variables");
+const { sellerAuth } = require("./controllers/authFunctions");
+
 // require("./data/connection");
 require("./data/sqlConnection");
 
@@ -18,12 +24,16 @@ app.use(function (req, res, next) {
 app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
-
+// multer stores zip file in zip-uploads and images in image-uploads
+app.use(multer({ storage: variables.storage }).array("file"));
+// sellerAuth,
 app.set("encoding", null);
 
 // app.use(auth);
 
-app.use("/seller-api/sellers", indexRouter);
+app.use("/seller-api/sellers", sellerRouter);
+app.use("/seller-api/ads", adRouter);
+app.use("/seller-api/images", imageRouter);
 
 // 18004259449
 

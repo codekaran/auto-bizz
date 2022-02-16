@@ -27,6 +27,7 @@ async function recordExists(keyValue, model) {
 exports.recordExists = recordExists;
 
 // checking the image size and image type.
+// image size in kb
 async function isImageValid(imageFormat, imageSize) {
   console.log("Checking the image size and image type");
   let result = false;
@@ -89,18 +90,25 @@ async function deleteImages(images) {
 exports.deleteImages = deleteImages;
 
 // ***************** compress image under 200 kb *****************
-const compressImage = async (inputImage, imageSize, sellerId) => {
+// inputImage - name of the image
+// imageSize- in kb
+const compressImage = async (inputImage, imageSize, sellerId, imagePath) => {
   return new Promise((resolve, reject) => {
     if (imageSize > 200000) {
       console.log("image size is > 200 kb compressing it");
-      const inputImagePath = path.join(__dirname, "../", "uploads", inputImage);
+      const inputImagePath = path.join(
+        __dirname,
+        "../",
+        imageFolder,
+        inputImage
+      );
       const ouputImage = sellerId
         ? sellerId + (+new Date()).toString(36) + ".jpeg"
         : (+new Date()).toString(36) + ".jpeg";
       const outputImagePath = path.join(
         __dirname,
         "../",
-        "uploads",
+        imageFolder,
         ouputImage
       );
       const quality =

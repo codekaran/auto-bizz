@@ -79,10 +79,10 @@ async function storeAd(adData, sellerId) {
     deliveryPeriod: adData.deliveryPeriod,
     dealerHomepage: adData.dealerHomepage,
     warranty: adData.warranty,
-    consumerPriceGross: adData.price.consumerPriceGross,
-    vatRate: adData.price.vatRate,
-    type: adData.price.type,
-    currency: adData.price.currency,
+    consumerPriceGross: adData.price ? adData.price.consumerPriceGross : null,
+    vatRate: adData.price ? adData.price.vatRate : null,
+    type: adData.price ? adData.price.type : null,
+    currency: adData.price ? adData.price.currency : null,
     images: adData.images ? adData.images.join() : null,
   });
 

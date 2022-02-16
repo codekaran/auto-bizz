@@ -20,8 +20,8 @@ const s3 = new AWS.S3();
 
 // upload single image to files
 
-async function uploadSingleFile(fileName) {
-  let filePath = "./uploads/" + fileName;
+async function uploadSingleFile(pathOfFile, fileName) {
+  let filePath = pathOfFile + fileName;
   console.log("uploading the image to s3 bucket");
   const fileStream = fs.createReadStream(filePath);
   console.log(typeof fileStream);
