@@ -1,7 +1,7 @@
 // const mysql = require("mysql");
 const Sequelize = require("sequelize");
 
-const sequelize = new Sequelize("autobizz", "root", "admin", {
+const sequelize = new Sequelize("autobizz", "admin", "admin", {
   dialect: "mysql",
   host: "localhost",
 });
