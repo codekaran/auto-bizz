@@ -9,6 +9,8 @@ const { sellerAuth } = require("./controllers/authFunctions");
 
 // require("./data/connection");
 require("./data/sqlConnection");
+// generating the database schema if not generated
+require("./data/generateDatabaseDesign");
 
 var bodyParser = require("body-parser");
 app.use(bodyParser.raw({ type: "image/jpeg", limit: 2097152 }));

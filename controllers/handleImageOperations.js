@@ -1,7 +1,6 @@
 const fs = require("fs");
 const utils = require("../helperFunctions/utility");
 const AD = require("../models/ad");
-const mongoDB = require("../data/databaseManipulation");
 const s3 = require("../helperFunctions/s3_file_upload");
 const db = require("../data/databaseHandle");
 const nonAssociatedImages = require("../models/nonAssociatedImages");

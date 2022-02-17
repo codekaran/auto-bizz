@@ -9,11 +9,22 @@ const sellerDetailsSchema = sequelizeConnection.define("sellers", {
     primaryKey: true,
     allowNull: false,
   },
-  companyName: {
+  sellerType: {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  street: {
+  firstName: {
+    type: Sequelize.STRING,
+  },
+  lastName: {
+    type: Sequelize.STRING,
+  },
+  country: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+
+  companyName: {
     type: Sequelize.STRING,
   },
   postalCode: {
@@ -21,15 +32,22 @@ const sellerDetailsSchema = sequelizeConnection.define("sellers", {
   },
   address: {
     type: Sequelize.STRING,
+    allowNull: false,
   },
   location: {
     type: Sequelize.STRING,
   },
   mobile: {
     type: Sequelize.BIGINT,
+    allowNull: false,
   },
   email: {
     type: Sequelize.STRING,
+    allowNull: false,
+  },
+  password: {
+    type: Sequelize.STRING,
+    allowNull: false,
   },
   creationDate: {
     type: Sequelize.DATE,

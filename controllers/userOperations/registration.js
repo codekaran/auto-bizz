@@ -1,6 +1,6 @@
-// const mongoDB = require("../data/databaseManipulation");
-const validateSeller = require("../helperFunctions/validateSeller");
-const db = require("../data/databaseHandle");
+const validateSeller = require("../../helperFunctions/validateSeller");
+const db = require("../../data/databaseHandle");
+const bcrypt = require("bcrypt");
 
 const handleUserRegisteration = async (req, res) => {
   try {
@@ -8,8 +8,9 @@ const handleUserRegisteration = async (req, res) => {
     let isSellerUnique = await validateSeller.duplicateCheck(req.body);
     console.log(isSellerUnique);
     if (isSellerUnique) {
+      let hash = await bcrypt.hash(req.body.password, 10);
+      req.body.password = hash;
       let id = await db.storeSellerDetails(req);
-      console.log(id);
       res.status(200).send({ id: id });
     } else {
       console.log("seller already exists");
@@ -21,3 +22,5 @@ const handleUserRegisteration = async (req, res) => {
   }
 };
 exports.handleUserRegisteration = handleUserRegisteration;
+
+handleUserLogin = async (req, res) => {};

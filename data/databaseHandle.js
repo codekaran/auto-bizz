@@ -9,15 +9,20 @@ const nonAssociatedImages = require("../models/nonAssociatedImages");
 // ************************ Save Operations ********************
 
 async function storeSellerDetails(req) {
+  console.log("stroing the pass : ", req.body.password);
   sellerData = req.body;
   let result = await Seller.create({
+    sellerType: sellerData.sellerType,
+    firstName: sellerData.firstName,
+    lastName: sellerData.lastName,
+    country: sellerData.country,
     companyName: sellerData.companyName,
-    street: sellerData.street,
     postalCode: sellerData.postalCode,
     address: sellerData.address,
     location: sellerData.location,
     mobile: sellerData.mobile,
     email: sellerData.email,
+    password: sellerData.password,
   });
 
   return result.dataValues.id;

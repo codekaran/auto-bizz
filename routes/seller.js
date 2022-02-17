@@ -4,19 +4,21 @@ var router = express.Router();
 const { auth } = require("../controllers/authFunctions");
 const { sellerAuth } = require("../controllers/authFunctions");
 
-// generating the database schema if not generated
-require("../data/generateDatabaseDesign");
-
 // helper functions
 const {
   handleUserRegisteration,
-} = require("../controllers/handleSellerUpload");
+} = require("../controllers/userOperations/registration");
 
+const { handleUserLogin } = require("../controllers/userOperations/login");
 // ********************* User Operations *******************
 
 // user registeration
 router.post("/register", auth, async (req, res, next) => {
   handleUserRegisteration(req, res);
+});
+
+router.post("/login", auth, async (req, res, next) => {
+  handleUserLogin(req, res);
 });
 
 router.post("/seller-api/sellers/:id/ads", auth, (req, res) => {

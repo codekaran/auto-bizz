@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.950.0",
+    "bcrypt": "^5.0.1",
     "boto3": "0.0.1",
     "decompress": "^4.2.1",
     "dotenv": "^10.0.0",
