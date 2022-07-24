@@ -13,7 +13,7 @@ require("./data/sqlConnection");
 
 // generating the database schema if not generated
 // creating the make table from json
-require("./data/generateDatabaseDesign");
+// require("./data/generateDatabaseDesign");
 
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
