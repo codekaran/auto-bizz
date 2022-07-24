@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
-
+const AWS = require("aws-sdk");
+const s3 = new AWS.S3({ signatureVersion: "v4", region: "eu-central-1" });
 const { auth } = require("../controllers/authFunctions");
 const { sellerAuth } = require("../controllers/authFunctions");
 
@@ -12,6 +13,8 @@ const {
 } = require("../controllers/adOperations/zipUpload");
 const { fetchSellerAds } = require("../controllers/adOperations/fetchAds");
 const { deleteSellerAds } = require("../controllers/adOperations/deleteAds");
+const { fetchAllAds } = require("../controllers/adOperations/fetchAds");
+const { S3 } = require("aws-sdk");
 
 // ********************* Ad Operations *******************
 
@@ -25,9 +28,14 @@ router.post("/:sellerId/ads", auth, sellerAuth, (req, res) => {
   handleAdUpload(req, res);
 });
 
-// fetch all or single ad
-router.get("/createAd/:sellerId/ads/:adId", auth, sellerAuth, (req, res) => {
+// fetch  single ad
+router.get("/:sellerId/ads/:adId", auth, sellerAuth, (req, res) => {
   fetchSellerAds(req, res);
+});
+
+// fetch all ads
+router.get("/ads", auth, (req, res) => {
+  fetchAllAds(req, res);
 });
 
 // delete ad
@@ -35,22 +43,14 @@ router.delete("/createAd/:sellerId/ads/:adId", auth, sellerAuth, (req, res) => {
   deleteSellerAds(req, res);
 });
 
-router.get("/test", (req, res) => {
+router.get("/test", async (req, res) => {
   console.log("test");
-  try {
-    for (let i = 0; i <= 5; i++) {
-      try {
-        if (i == 0) {
-          throw "first eror";
-        }
-        console.log(i);
-      } catch (error) {
-        console.log("inner error");
-      }
-    }
-  } catch (error) {
-    console.log("outer error");
-  }
+  let params = {
+    Bucket: "autobizz",
+    Key: "1l5qoacet.jpeg",
+  };
+  let out = await s3.getSignedUrl("getObject", params);
+  console.log(out);
 });
 
 module.exports = router;

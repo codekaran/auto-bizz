@@ -13,14 +13,14 @@ async function storeSellerDetails(req) {
   sellerData = req.body;
   let result = await Seller.create({
     sellerType: sellerData.sellerType,
-    firstName: sellerData.firstName,
-    lastName: sellerData.lastName,
+    firstName: sellerData.fname,
+    lastName: sellerData.lname,
     country: sellerData.country,
     companyName: sellerData.companyName,
-    postalCode: sellerData.postalCode,
-    address: sellerData.address,
+    postalCode: sellerData.zipCode,
+    address: sellerData.street,
     location: sellerData.location,
-    mobile: sellerData.mobile,
+    mobile: sellerData.phone,
     email: sellerData.email,
     password: sellerData.password,
   });
@@ -113,12 +113,7 @@ async function handleWhenSumGreaterThanLimit(
   // upload the needed images to s3
   let urls = "";
   if (callType == "upload") {
-    urls = await s3.uploadMultipleFile(imagesNeededList);
-
-    // delete the images which are not needed from the server
-    // if (imageList.length > 0) {
-    //   await utils.deleteImages(imageList);
-    // }
+    urls = await s3.uploadMultipleFile(imagesNeededList, "./images-uploads/");
   } else {
     // when the call type is associate(image list will contain s3 urls)
     urls = imagesNeededList;
@@ -142,7 +137,7 @@ async function handleWhenSumLesserThanLimit(
   // when sum of prev and new images is less than limit
   let urls = "";
   if (callType == "upload") {
-    urls = await s3.uploadMultipleFile(imageList, "./uploads/");
+    urls = await s3.uploadMultipleFile(imageList, "./images-uploads/");
   } else {
     // when the call type is associate
     urls = imageList;
@@ -232,15 +227,33 @@ async function fetchSingleAd(id) {
 exports.fetchSingleAd = fetchSingleAd;
 
 // params :  id - object to be searched for,
-async function fetchAllAd(id) {
-  let data = await AD.findAll({ where: { sellerId: id } });
-  // console.log(data.dataValues);
-  let images = data.dataValues.images;
-  if (images) {
-    images = images.split(",");
+// returns the 5 ads
+async function fetchAllAds() {
+  let data = await AD.findAll({
+    attributes: [
+      "id",
+      "model",
+      "make",
+      "mileage",
+      "images",
+      "fuel",
+      "gearbox",
+      "firstRegistration",
+      "condition",
+      "description",
+      "power",
+    ],
+    raw: true,
+    limit: 10,
+  });
+  for (let ad of data) {
+    let images = ad.images;
+    if (images) {
+      images = images.split(",");
+    }
+    ad.images = images;
   }
-  data.dataValues.images = images;
-  return data.dataValues;
+  return data;
 }
 
-exports.fetchAllAd = fetchAllAd;
+exports.fetchAllAds = fetchAllAds;

@@ -31,6 +31,7 @@ exports.recordExists = recordExists;
 async function isImageValid(imageFormat, imageSize) {
   console.log("Checking the image size and image type");
   let result = false;
+  // size is less than 2MB
   if (
     (imageFormat === "jpg" || imageFormat === "jpeg") &&
     imageSize <= 2000096
@@ -84,15 +85,16 @@ async function deleteImages(images) {
   console.log("Deleting the images from server");
   console.log(images);
   for (let image of images) {
-    fs.unlinkSync("./uploads/" + image);
+    fs.unlinkSync("./images-uploads/" + image);
   }
 }
 exports.deleteImages = deleteImages;
 
 // ***************** compress image under 200 kb *****************
 // inputImage - name of the image
-// imageSize- in kb
-const compressImage = async (inputImage, imageSize, sellerId, imagePath) => {
+// imageSize - in kb
+// parent folder of images
+const compressImage = async (inputImage, imageSize, sellerId, imageFolder) => {
   return new Promise((resolve, reject) => {
     if (imageSize > 200000) {
       console.log("image size is > 200 kb compressing it");

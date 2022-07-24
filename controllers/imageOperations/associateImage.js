@@ -1,6 +1,6 @@
-const utils = require("../helperFunctions/utility");
+const utils = require("../../helperFunctions/utility");
 const AD = require("../models/ad");
-const db = require("../data/databaseHandle");
+const db = require("../../data/databaseHandle");
 const nonAssociatedImages = require("../models/nonAssociatedImages");
 
 // ***************** associate image *****************
@@ -8,7 +8,7 @@ const handleAssociate = async (req, res) => {
   try {
     let sellerId = req.params.sellerId;
     let adId = req.params.adId;
-    // check if the image exists on server.
+    // check if the image exists on S3 bucket.
     let result = await utils.checkImageExists(req, nonAssociatedImages);
     if (result.status) {
       // check if ad belongs to seller

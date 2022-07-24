@@ -7,7 +7,7 @@ const AWS = require("aws-sdk");
 
 const accessKeyId = process.env.aws_access_key_id;
 const secretAccessKey = process.env.aws_secret_access_key;
-const bucket_name = "autos-motots-test";
+const bucket_name = "autobizz";
 const region = "us-east-1";
 
 AWS.config.update({
@@ -42,7 +42,7 @@ exports.uploadSingleFile = uploadSingleFile;
 
 // upload multiple images
 // files - list of name of the images to be uploaded
-// path - where the image is uploaded
+// path - where the image is uploaded on server
 async function uploadMultipleFile(files, path) {
   let remainingList = [];
   let imageURLS = [];

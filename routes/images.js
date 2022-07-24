@@ -4,6 +4,9 @@ var router = express.Router();
 const { auth } = require("../controllers/authFunctions");
 const { sellerAuth } = require("../controllers/authFunctions");
 const imageOperations = require("../controllers/handleImageOperations");
+const {
+  handleMultipleUpload,
+} = require("../controllers/imageOperations/multipleImageUpload");
 
 // ********************* Image Operations ********************
 
@@ -15,7 +18,7 @@ router.put(
   auth,
   sellerAuth,
   (req, res, next) => {
-    imageOperations.handleMultipleUpload(req, res);
+    handleMultipleUpload(req, res);
   }
 );
 

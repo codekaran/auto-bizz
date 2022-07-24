@@ -38,7 +38,7 @@ const handleImageUpload = async (ad, sellerId) => {
 
 // uploads zipped images to s3
 const uploadImageToS3 = async (pathOfFile, fileName) => {
-  let imageSize = fs.statSync(path).size / 1000;
+  let imageSize = fs.statSync(pathOfFile + "/" + fileName).size / 1000;
   console.log("image Size : ", imageSize + " kb");
   if (utils.isImageValid("jpg", imageSize)) {
     console.log("image is valid");
@@ -48,64 +48,46 @@ const uploadImageToS3 = async (pathOfFile, fileName) => {
 };
 
 const handleMultipleAdUpload = async (req, res) => {
+  // console.log(req.files);
   try {
-    console.log(req.files);
-    // // uploading zip file using multer
-    // upload(req, res, async function (err) {
-    //   if (err instanceof multer.MulterError) {
-    //     // A Multer error occurred when uploading.
-    //     console.log(err);
-    //   } else if (err) {
-    //     // An unknown error occurred when uploading.
-    //     console.log(err);
-    //   }
-    //   // added try catch for inner function
-    //   try {
-    //     let sellerId = req.params.sellerId;
-    //     console.log(req.file);
-    //     // unzipping the files
-    //     let files = await decompress(req.file.path, "unzip-files/" + sellerId);
-    //     let adFile = {};
-    //     // fetching the ads.json file from extracted files.
-    //     for (let file of files) {
-    //       if (file.path == "ads.json") {
-    //         adFile = file;
-    //         break;
-    //       }
-    //     }
-    //     let adData = JSON.parse(adFile.data);
-    //     // storing the ad one by one
-    //     let adNumber = 1;
-    //     let adUploadFinalStatus = {};
-    //     for (let ad of adData) {
-    //       // try catch block to check if any of the ad upload fails
-    //       try {
-    //         ad = await handleImageUpload(ad, sellerId);
-    //         let result = await adUtils.adUploadCommonLogic(
-    //           res,
-    //           req,
-    //           ad,
-    //           "multiple"
-    //         );
-    //         console.log(
-    //           "$$$$$$$$$$$$$$$$$$$ upload result %%%%%%%%%%%%%%%%%%%"
-    //         );
-    //         adUploadFinalStatus["ad " + adNumber] = result;
-    //       } catch (error) {
-    //         console.log("error in the loop ", adNumber);
-    //         console.log(error);
-    //         adUploadFinalStatus["ad " + adNumber] = "something went wrong";
-    //       }
-    //       adNumber += 1;
-    //     }
-    //     res.status(500).send(adUploadFinalStatus);
-    //   } catch (error) {
-    //     console.log("error in uploading");
-    //     console.log(error);
-    //     res.status(500).send("Somethig  went wrong");
-    //   }
-    // });
+    let sellerId = req.params.sellerId;
+    console.log(req.file);
+    // unzipping the files
+    let files = await decompress(req.files[0].path, "unzip-files/" + sellerId);
+    let adFile = {};
+    // fetching the ads.json file from extracted files.
+    for (let file of files) {
+      if (file.path == "ads.json") {
+        adFile = file;
+        break;
+      }
+    }
+    let adData = JSON.parse(adFile.data);
+    // storing the ad one by one
+    let adNumber = 1;
+    let adUploadFinalStatus = {};
+    for (let ad of adData) {
+      // try catch block to check if any of the ad upload fails
+      try {
+        ad = await handleImageUpload(ad, sellerId);
+        let result = await adUtils.adUploadCommonLogic(
+          res,
+          req,
+          ad,
+          "multiple"
+        );
+        console.log("$$$$$$$$$$$$$$$$$$$ upload result %%%%%%%%%%%%%%%%%%%");
+        adUploadFinalStatus["ad " + adNumber] = result;
+      } catch (error) {
+        console.log("error in the loop ", adNumber);
+        console.log(error);
+        adUploadFinalStatus["ad " + adNumber] = "something went wrong";
+      }
+      adNumber += 1;
+    }
+    res.status(500).send(adUploadFinalStatus);
   } catch (error) {
+    console.log("error in uploading");
     console.log(error);
     res.status(500).send("Somethig  went wrong");
   }

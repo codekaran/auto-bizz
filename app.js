@@ -3,6 +3,7 @@ const app = express();
 const sellerRouter = require("./routes/seller");
 const adRouter = require("./routes/ads");
 const imageRouter = require("./routes/images");
+const refData = require("./routes/ref");
 const multer = require("multer");
 const variables = require("./helperFunctions/variables");
 const { sellerAuth } = require("./controllers/authFunctions");
@@ -10,11 +11,8 @@ const { sellerAuth } = require("./controllers/authFunctions");
 // require("./data/connection");
 require("./data/sqlConnection");
 // generating the database schema if not generated
-require("./data/generateDatabaseDesign");
-
-var bodyParser = require("body-parser");
-app.use(bodyParser.raw({ type: "image/jpeg", limit: 2097152 }));
-
+// creating the make table from json
+// require("./data/generateDatabaseDesign");
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
@@ -22,6 +20,8 @@ app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Credentials", true);
   next();
 });
+var bodyParser = require("body-parser");
+app.use(bodyParser.raw({ type: "image/jpeg", limit: 2097152 }));
 
 app.use(bodyParser.json());
 
@@ -36,6 +36,7 @@ app.set("encoding", null);
 app.use("/seller-api/sellers", sellerRouter);
 app.use("/seller-api/ads", adRouter);
 app.use("/seller-api/images", imageRouter);
+app.use("/seller-api/ref", refData);
 
 // 18004259449
 
