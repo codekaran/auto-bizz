@@ -10,9 +10,11 @@ const { sellerAuth } = require("./controllers/authFunctions");
 
 // require("./data/connection");
 require("./data/sqlConnection");
+
 // generating the database schema if not generated
 // creating the make table from json
-// require("./data/generateDatabaseDesign");
+require("./data/generateDatabaseDesign");
+
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
