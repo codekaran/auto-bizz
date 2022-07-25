@@ -5,9 +5,9 @@ const bcrypt = require("bcrypt");
 const handleUserRegisteration = async (req, res) => {
   try {
     // check if seller already exists(*need to check)
-    let isSellerUnique = await validateSeller.duplicateCheck(req.body);
+    let sellerExists = await validateSeller.duplicateCheck(req.body);
 
-    if (isSellerUnique) {
+    if (!sellerExists) {
       let hash = await bcrypt.hash(req.body.password, 10);
       req.body.password = hash;
       let id = await db.storeSellerDetails(req);
