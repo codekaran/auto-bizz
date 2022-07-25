@@ -6,7 +6,8 @@ async function duplicateCheck(sellerData) {
   let status = await Seller.findOne({
     where: { email: sellerData.email },
   });
-  if (status) {
+  console.log(status);
+  if (status == null) {
     return true;
   }
   return false;
