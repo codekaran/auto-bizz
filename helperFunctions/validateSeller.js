@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Seller = require("../models/sellerDetails");
-
+// returns true if record exists in database
 async function duplicateCheck(sellerData) {
   console.log("Checking if the seller is duplicate");
   let status = await Seller.findOne({
@@ -8,8 +8,8 @@ async function duplicateCheck(sellerData) {
   });
   console.log(status);
   if (status == null) {
-    return true;
+    return false;
   }
-  return false;
+  return true;
 }
 exports.duplicateCheck = duplicateCheck;
