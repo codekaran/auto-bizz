@@ -7,8 +7,8 @@ async function duplicateCheck(sellerData) {
     where: { email: sellerData.email },
   });
   if (status) {
-    return false;
+    return true;
   }
-  return true;
+  return false;
 }
 exports.duplicateCheck = duplicateCheck;
