@@ -11,6 +11,9 @@ const {
 } = require("../controllers/userOperations/registration");
 
 const { handleUserLogin } = require("../controllers/userOperations/login");
+const {
+  handleUserDataFetch,
+} = require("../controllers/userOperations/fetchUserData");
 // ********************* User Operations *******************
 
 // user registeration
@@ -27,6 +30,11 @@ router.post("/login", auth, async (req, res, next) => {
 // check if the email already exists
 router.get("/emailExists", async (req, res, next) => {
   handleEmailCheck(req, res);
+});
+
+// returns user data
+router.get("/userData/:id", async (req, res, next) => {
+  handleUserDataFetch(req, res);
 });
 
 router.post("/seller-api/sellers/:id/ads", auth, (req, res) => {

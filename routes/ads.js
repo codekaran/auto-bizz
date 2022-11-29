@@ -28,8 +28,13 @@ router.post("/:sellerId/ads", auth, sellerAuth, (req, res) => {
   handleAdUpload(req, res);
 });
 
-// fetch  single ad
+// fetch  single ad of a seller
 router.get("/:sellerId/ads/:adId", auth, sellerAuth, (req, res) => {
+  fetchSellerAds(req, res);
+});
+
+// fetch ads of a user
+router.get("/:sellerId/ads", auth, sellerAuth, (req, res) => {
   fetchSellerAds(req, res);
 });
 
@@ -38,7 +43,12 @@ router.get("/ads", auth, (req, res) => {
   fetchAllAds(req, res);
 });
 
-// delete ad
+// fetch ads based on adid
+router.get("/singleAd/:adId", auth, (req, res) => {
+  fetchSellerAds(req, res);
+});
+
+// delete ad this is mongo // need to work in this.
 router.delete("/createAd/:sellerId/ads/:adId", auth, sellerAuth, (req, res) => {
   deleteSellerAds(req, res);
 });

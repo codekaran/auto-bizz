@@ -49,7 +49,7 @@ const handleMultipleUpload = async (req, res) => {
       } else {
         // delete images from the server when ad id is invalid
         await utils.deleteImages(imagesForS3);
-        res.send("Invalid Ad Id").status(400);
+        res.status(400).send("Invalid Ad Id");
       }
     } catch (error) {
       console.log(error);

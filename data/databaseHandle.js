@@ -152,7 +152,7 @@ async function handleWhenSumLesserThanLimit(
   return data.images.split(",");
 }
 
-// params :  adid - ad id for which the image is associated to,
+// params :  adid - ad id to which the image is to be associated,
 //           imageList - list of images which are added to the ad,
 //           callType - called by associate or by upload
 async function addImagesToAd(adId, imageList, res, callType) {
@@ -214,17 +214,33 @@ exports.deleteImagesFromDB = deleteImagesFromDB;
 
 // params :  id - object to be searched for,
 async function fetchSingleAd(id) {
-  let data = await AD.findByPk(id);
-  // console.log(data.dataValues);
-  let images = data.dataValues.images;
+  let data = await AD.findOne({ where: { id: id }, raw: true });
+  console.log(data);
+  let images = data.images;
   if (images) {
     images = images.split(",");
   }
-  data.dataValues.images = images;
-  return data.dataValues;
+  data.images = images;
+  return data;
 }
 
 exports.fetchSingleAd = fetchSingleAd;
+
+// params :  sellerid - object to be searched for, returns all of seller
+async function fetchAllAdOfSeller(sellerId) {
+  let data = await AD.findAll({ where: { sellerId: sellerId }, raw: true });
+  console.log(data);
+  for (let ad of data) {
+    let images = ad.images;
+    if (images) {
+      images = images.split(",");
+    }
+    ad.images = images;
+  }
+  return data;
+}
+
+exports.fetchAllAdOfSeller = fetchAllAdOfSeller;
 
 // params :  id - object to be searched for,
 // returns the 5 ads
