@@ -11,6 +11,7 @@ const handleUserRegisteration = async (req, res) => {
       let hash = await bcrypt.hash(req.body.password, 10);
       req.body.password = hash;
       let id = await db.storeSellerDetails(req);
+      // instead of sending id send token with ID -mayank
       res.status(200).send({ id: id });
     } else {
       console.log("seller already exists");

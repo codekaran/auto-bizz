@@ -1,5 +1,6 @@
 const Seller = require("../models/sellerDetails");
 const utils = require("../helperFunctions/utility");
+const jwt = require("jsonwebtoken");
 
 const auth = (req, res, next) => {
   try {
@@ -23,21 +24,38 @@ const auth = (req, res, next) => {
 
 exports.auth = auth;
 
-// Checks wether the seller exists or not
+// Checks wether the requester is authorised or not
 const sellerAuth = async (req, res, next) => {
+  const token = req.header("x-auth-token");
+  if (!token) {
+    return res.status(401).json({ msg: "no token auth denied" });
+  }
   try {
     console.log("Checking the seller");
-    let sellerId = req.params.sellerId;
-    let sellerExists = await utils.idExists(sellerId, Seller);
-    if (sellerExists) {
-      console.log("Seller exists");
-      next();
-    } else {
-      res.send("Seller Id does not exists").status(400);
-    }
+
+    //unsecure as random id can be inserted
+    // let sellerId = req.params.sellerId;
+
+    // //secure due to randomness and also not in URL
+
+    // //no need to check seller as the token is signed
+    // let sellerExists = await utils.idExists(sellerId, Seller);
+
+    // //code for old implementation
+    // if (sellerExists) {
+    //   console.log("Seller exists");
+    //   next();
+    // } else {
+    //   res.send("Seller Id does not exists").status(400);
+    // }
+
+    //secure code token
+    const decoded = jwt.verify(token, process.env.jwt_secret);
+    req.id = decoded.id;
+    next();
   } catch (error) {
     console.log(error);
-    res.status(500).send("Something went wrong");
+    res.status(401).json({ msg: "invalid token" });
   }
 };
 

@@ -5,7 +5,6 @@ require("dotenv").config();
 
 handleUserLogin = async (req, res) => {
   try {
-    console.log("inside login");
     let email = req.body.email;
     let password = req.body.password;
     let data = await Seller.findOne({
@@ -15,29 +14,19 @@ handleUserLogin = async (req, res) => {
     });
 
     if (!data) {
-      return res.status(400).send("Seller Does not exists");
+      return res.status(400).send({ error: "Seller Does not exists" });
     }
-
-    // checking if the password matches
-    console.log(process.env.jwt_secret);
 
     let status = await bcrypt.compare(password, data.password);
     if (status) {
-      console.log("USER VERIFIED CREATING TOKEN");
-      console.log(data);
-      let token = await jwt.sign(
-        {
-          firstName: data.firstName,
-          id: data.id,
-        },
-        process.env.jwt_secret,
-        { expiresIn: "1h" }
-      );
+      let token = await jwt.sign({ id: data.id }, process.env.jwt_secret, {
+        expiresIn: "1h",
+      });
       console.log(token);
-      res.status(200).send({ auth: true, token: token });
+      res.status(200).send({ token });
     } else {
       console.log("PASSWORD MISMATCH");
-      res.status(401).send({ auth: false });
+      res.status(401).send({ error: "password error" });
     }
   } catch (err) {
     res.status(500).send("Something went wrong");

@@ -34,7 +34,8 @@ router.get("/:sellerId/ads/:adId", auth, sellerAuth, (req, res) => {
 });
 
 // fetch ads of a user
-router.get("/:sellerId/ads", auth, sellerAuth, (req, res) => {
+// public
+router.get("/:sellerId/ads", auth, (req, res) => {
   fetchSellerAds(req, res);
 });
 

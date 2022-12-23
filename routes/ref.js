@@ -7,6 +7,9 @@ const {
 const {
   handleModelFetch,
 } = require("../controllers/refDataOperations/getModels");
+const {
+  handleModelsFetch,
+} = require("../controllers/refDataOperations/getAllModels");
 // ********************* Reference Data *******************
 
 //
@@ -17,6 +20,10 @@ router.get("/getMakes", async (req, res, next) => {
 //
 router.get("/getModels/:make", async (req, res, next) => {
   handleModelFetch(req, res);
+});
+
+router.get("/getModels", async (req, res, next) => {
+  handleModelsFetch(req, res);
 });
 
 module.exports = router;

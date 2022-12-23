@@ -23,6 +23,7 @@ router.post("/register", auth, async (req, res, next) => {
   handleUserRegisteration(req, res);
 });
 
+//login
 router.post("/login", auth, async (req, res, next) => {
   handleUserLogin(req, res);
 });
