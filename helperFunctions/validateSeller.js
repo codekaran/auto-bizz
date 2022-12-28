@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const Seller = require("../models/sellerDetails");
 // returns true if record exists in database
 async function duplicateCheck(sellerData) {

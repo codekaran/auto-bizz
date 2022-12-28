@@ -1,6 +1,7 @@
 const validateSeller = require("../../helperFunctions/validateSeller");
 const db = require("../../data/databaseHandle");
 const bcrypt = require("bcrypt");
+const { generateToken } = require("./userUtility");
 
 const handleUserRegisteration = async (req, res) => {
   try {
@@ -11,8 +12,9 @@ const handleUserRegisteration = async (req, res) => {
       let hash = await bcrypt.hash(req.body.password, 10);
       req.body.password = hash;
       let id = await db.storeSellerDetails(req);
-      // instead of sending id send token with ID -mayank
-      res.status(200).send({ id: id });
+      // token is sent once the user is registered
+      let token = await generateToken({ id: id }, "1h");
+      res.status(200).send({ token });
     } else {
       console.log("seller already exists");
       res.status(200).send({ message: "Seller already exists" });

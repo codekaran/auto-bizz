@@ -17,27 +17,33 @@ const getPresignedURL = async (imageUrl) => {
   }
   return signedURLImages;
 };
-// ***********************  returns single/all ads *************************
-const fetchSellerAds = async (req, res) => {
+// ***********************  returns all ad *************************
+const fetchSingleAd = async (req, res) => {
   try {
     let data = {};
-    // if adID exists fetch single ad
-    if (req.params.adId) {
-      data = await db.fetchSingleAd(req.params.adId);
-      data.images = await getPresignedURL(data.images);
-    }
-    // else fetch all the ads of seller id
-    else {
-      console.log("fetching ads for seller Id ", req.params.sellerId);
-      data = await db.fetchAllAdOfSeller(req.params.sellerId);
-      for (let record of data) {
-        record.images = await getPresignedURL(record.images);
-      }
+    data = await db.fetchSingleAd(req.params.adId);
+    data.images = await getPresignedURL(data.images);
+    res.status(200).send(data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: "Somethig  went wrong" });
+  }
+};
+exports.fetchSingleAd = fetchSingleAd;
+
+// ***********************  returns all ads of user *************************
+const fetchSellerAds = async (req, res) => {
+  try {
+    //fetch all the ads of seller id
+    console.log("fetching ads for seller Id ", req.sellerId);
+    data = await db.fetchAllAdOfSeller(req.sellerId);
+    for (let record of data) {
+      record.images = await getPresignedURL(record.images);
     }
     res.status(200).send(data);
   } catch (error) {
     console.log(error);
-    res.status(500).send("Somethig  went wrong");
+    res.status(500).json({ msg: "Somethig  went wrong" });
   }
 };
 exports.fetchSellerAds = fetchSellerAds;

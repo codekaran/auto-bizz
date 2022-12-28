@@ -11,7 +11,10 @@ const {
 const {
   handleMultipleAdUpload,
 } = require("../controllers/adOperations/zipUpload");
-const { fetchSellerAds } = require("../controllers/adOperations/fetchAds");
+const {
+  fetchSellerAds,
+  fetchSingleAd,
+} = require("../controllers/adOperations/fetchAds");
 const { deleteSellerAds } = require("../controllers/adOperations/deleteAds");
 const { fetchAllAds } = require("../controllers/adOperations/fetchAds");
 const { S3 } = require("aws-sdk");
@@ -24,33 +27,28 @@ router.post("/:sellerId/bulkads", auth, (req, res) => {
 });
 
 // create Ad
-router.post("/:sellerId/ads", auth, sellerAuth, (req, res) => {
+router.post("/ads", auth, sellerAuth, (req, res) => {
   handleAdUpload(req, res);
 });
-
-// fetch  single ad of a seller
-router.get("/:sellerId/ads/:adId", auth, sellerAuth, (req, res) => {
-  fetchSellerAds(req, res);
+//----route change karan
+// fetch  single ad
+router.get("/ad/:adId", auth, (req, res) => {
+  fetchSingleAd(req, res);
 });
-
+//--route change karan
 // fetch ads of a user
-// public
-router.get("/:sellerId/ads", auth, (req, res) => {
+// protected
+router.get("/userAds", sellerAuth, (req, res) => {
   fetchSellerAds(req, res);
 });
-
-// fetch all ads
+//public
+// fetch all ads based on query -- working
 router.get("/ads", auth, (req, res) => {
   fetchAllAds(req, res);
 });
 
-// fetch ads based on adid
-router.get("/singleAd/:adId", auth, (req, res) => {
-  fetchSellerAds(req, res);
-});
-
 // delete ad this is mongo // need to work in this.
-router.delete("/createAd/:sellerId/ads/:adId", auth, sellerAuth, (req, res) => {
+router.delete("/ad", auth, sellerAuth, (req, res) => {
   deleteSellerAds(req, res);
 });
 

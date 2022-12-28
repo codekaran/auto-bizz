@@ -11,6 +11,7 @@ const nonAssociatedImages = require("../models/nonAssociatedImages");
 async function storeSellerDetails(req) {
   console.log("stroing the pass : ", req.body.password);
   sellerData = req.body;
+  console.log(sellerData.mobile);
   let result = await Seller.create({
     sellerType: sellerData.sellerType,
     firstName: sellerData.fname,

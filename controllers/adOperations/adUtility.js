@@ -39,7 +39,7 @@ const uploadImages = async (req, sellerId) => {
 
 // ad upload function for single and multiple ads.
 const adUploadCommonLogic = async (res, req, adData, uploadType) => {
-  let sellerId = req.params.sellerId;
+  let sellerId = req.sellerId;
 
   console.log("#########uploading#########");
   // chassis number or any other unique field

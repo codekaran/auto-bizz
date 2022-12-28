@@ -2,7 +2,7 @@ const Seller = require("../../models/sellerDetails");
 
 handleUserDataFetch = async (req, res) => {
   try {
-    let sellerId = req.params.id;
+    let sellerId = req.sellerId;
     console.log("inside get user data for ", sellerId);
     let data = await Seller.findOne({
       where: { id: sellerId },

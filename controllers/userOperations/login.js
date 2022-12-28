@@ -1,7 +1,6 @@
 const bcrypt = require("bcrypt");
 const Seller = require("../../models/sellerDetails");
-const jwt = require("jsonwebtoken");
-require("dotenv").config();
+const { generateToken } = require("./userUtility");
 
 handleUserLogin = async (req, res) => {
   try {
@@ -19,9 +18,7 @@ handleUserLogin = async (req, res) => {
 
     let status = await bcrypt.compare(password, data.password);
     if (status) {
-      let token = await jwt.sign({ id: data.id }, process.env.jwt_secret, {
-        expiresIn: "1h",
-      });
+      let token = await generateToken({ id: data.id }, "1h");
       console.log(token);
       res.status(200).send({ token });
     } else {

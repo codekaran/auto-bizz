@@ -138,7 +138,6 @@ const compressImage = async (inputImage, imageSize, sellerId, imageFolder) => {
   });
 };
 exports.compressImage = compressImage;
-
 // move images
 // async function moveImages(sellerId, adId, images) {
 //   console.log("moving the images");

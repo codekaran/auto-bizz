@@ -16,14 +16,12 @@ const {
 } = require("../controllers/userOperations/fetchUserData");
 // ********************* User Operations *******************
 
-// user registeration
+// user registeration -change karan
 router.post("/register", auth, async (req, res, next) => {
-  console.log(req.body);
-  // res.send("hhjelloo");
   handleUserRegisteration(req, res);
 });
 
-//login
+//login - change karan
 router.post("/login", auth, async (req, res, next) => {
   handleUserLogin(req, res);
 });
@@ -34,14 +32,8 @@ router.get("/emailExists", async (req, res, next) => {
 });
 
 // returns user data
-router.get("/userData/:id", async (req, res, next) => {
+router.get("/userData", sellerAuth, async (req, res, next) => {
   handleUserDataFetch(req, res);
-});
-
-router.post("/seller-api/sellers/:id/ads", auth, (req, res) => {
-  console.log(req.params.id);
-  console.log("test");
-  res.send("helo");
 });
 
 router.post("/test", (req, res) => {

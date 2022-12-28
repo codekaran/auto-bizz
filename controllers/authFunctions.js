@@ -51,7 +51,7 @@ const sellerAuth = async (req, res, next) => {
 
     //secure code token
     const decoded = jwt.verify(token, process.env.jwt_secret);
-    req.id = decoded.id;
+    req.sellerId = decoded.id;
     next();
   } catch (error) {
     console.log(error);
