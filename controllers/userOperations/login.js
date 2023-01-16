@@ -13,7 +13,7 @@ handleUserLogin = async (req, res) => {
     });
 
     if (!data) {
-      return res.status(400).send({ error: "Seller Does not exists" });
+      return res.status(400).send({ errMsg: "Seller Does not exists" });
     }
 
     let status = await bcrypt.compare(password, data.password);
@@ -23,10 +23,10 @@ handleUserLogin = async (req, res) => {
       res.status(200).send({ token });
     } else {
       console.log("PASSWORD MISMATCH");
-      res.status(401).send({ error: "password error" });
+      res.status(401).send({ errMsg: "password error" });
     }
   } catch (err) {
-    res.status(500).send("Something went wrong");
+    res.status(500).send({ errMsg: "Something went wrong" });
     console.log(err);
   }
 };

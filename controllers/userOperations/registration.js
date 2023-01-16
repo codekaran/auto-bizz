@@ -13,11 +13,11 @@ const handleUserRegisteration = async (req, res) => {
       req.body.password = hash;
       let id = await db.storeSellerDetails(req);
       // token is sent once the user is registered
-      let token = await generateToken({ id: id }, "1h");
+      let token = await generateToken({ id }, "1h");
       res.status(200).send({ token });
     } else {
       console.log("seller already exists");
-      res.status(200).send({ message: "Seller already exists" });
+      res.status(403).send({ errMsg: "Seller already exists" });
     }
   } catch (error) {
     console.log(error);

@@ -47,5 +47,5 @@ app.get("/getCarList", async function (req, res) {
 });
 
 app.listen(process.env.PORT || 8000);
-
+console.log(process.env.urlencoded);
 console.log("listeneing to port 8000");
