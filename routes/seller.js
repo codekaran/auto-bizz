@@ -14,6 +14,9 @@ const { handleUserLogin } = require("../controllers/userOperations/login");
 const {
   handleUserDataFetch,
 } = require("../controllers/userOperations/fetchUserData");
+const {
+  handleUserUpdate,
+} = require("../controllers/userOperations/updateUserData");
 // ********************* User Operations *******************
 
 // user registeration -change karan
@@ -34,6 +37,10 @@ router.get("/emailExists", async (req, res, next) => {
 // returns user data
 router.get("/userData", sellerAuth, async (req, res, next) => {
   handleUserDataFetch(req, res);
+});
+
+router.put("/updateUser", sellerAuth, async (req, res, next) => {
+  handleUserUpdate(req, res);
 });
 
 router.post("/test", (req, res) => {

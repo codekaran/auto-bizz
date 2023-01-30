@@ -17,7 +17,7 @@ const handleUserRegisteration = async (req, res) => {
       res.status(200).send({ token });
     } else {
       console.log("seller already exists");
-      res.status(200).send({ message: "Seller already exists" });
+      res.status(403).send({ errMsg: "Seller already exists" });
     }
   } catch (error) {
     console.log(error);

@@ -1,19 +1,18 @@
 const bcrypt = require("bcrypt");
-const Seller = require("../../models/sellerDetails");
-const { generateToken } = require("./userUtility");
+
+const { generateToken, getUserDataUtil } = require("./userUtility");
 
 handleUserLogin = async (req, res) => {
   try {
     let email = req.body.email;
     let password = req.body.password;
-    let data = await Seller.findOne({
-      where: { email: email },
-      attributes: ["id", "firstName", "password"],
-      raw: true,
-    });
-
+    let data = await getUserDataUtil({ email: email }, [
+      "id",
+      "firstName",
+      "password",
+    ]);
     if (!data) {
-      return res.status(400).send({ error: "Seller Does not exists" });
+      return res.status(400).send({ errMsg: "Seller Does not exists" });
     }
 
     let status = await bcrypt.compare(password, data.password);
@@ -23,7 +22,7 @@ handleUserLogin = async (req, res) => {
       res.status(200).send({ token });
     } else {
       console.log("PASSWORD MISMATCH");
-      res.status(401).send({ error: "password error" });
+      res.status(401).send({ errMsg: "password error" });
     }
   } catch (err) {
     res.status(500).send("Something went wrong");
