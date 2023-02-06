@@ -43,8 +43,6 @@ handleUserUpdate = async (req, res) => {
       res.status(200).send({ msg: "Successfully Updated" });
     }
   } catch (err) {
-    console.log("Error occured while updating user data");
-    console.log(err);
     res.status(500).send({ errMsg: "Internal error" });
   }
 };
