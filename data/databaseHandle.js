@@ -20,10 +20,12 @@ async function storeSellerDetails(req) {
     companyName: sellerData.companyName,
     postalCode: sellerData.zipCode,
     address: sellerData.street,
-    location: sellerData.location,
+    city: sellerData.city,
     mobile: sellerData.phone,
+    countryCode: sellerData.countryCode,
     email: sellerData.email,
     password: sellerData.password,
+    active: true,
   });
 
   return result.dataValues.id;

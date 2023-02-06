@@ -29,6 +29,9 @@ const sellerDetailsSchema = sequelizeConnection.define("sellers", {
   postalCode: {
     type: Sequelize.STRING,
   },
+  city: {
+    type: Sequelize.STRING,
+  },
   address: {
     type: Sequelize.STRING,
     allowNull: false,
@@ -37,7 +40,11 @@ const sellerDetailsSchema = sequelizeConnection.define("sellers", {
     type: Sequelize.STRING,
   },
   mobile: {
-    type: Sequelize.BIGINT,
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  countryCode: {
+    type: Sequelize.STRING,
     allowNull: false,
   },
   email: {
@@ -46,6 +53,10 @@ const sellerDetailsSchema = sequelizeConnection.define("sellers", {
   },
   password: {
     type: Sequelize.STRING,
+    allowNull: false,
+  },
+  active: {
+    type: Sequelize.BOOLEAN,
     allowNull: false,
   },
   creationDate: {

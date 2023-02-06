@@ -7,11 +7,20 @@ handleUserUpdate = async (req, res) => {
     let sellerId = req.sellerId;
     console.log("updating user data for ", sellerId);
     let newUserData = req.body;
-    // if user wants to update email
+    // if user wants to update email or password
     if (
       newUserData.hasOwnProperty("email") ||
       newUserData.hasOwnProperty("newPassword")
     ) {
+      //   new email should be unique
+      if (newUserData.hasOwnProperty("email")) {
+        let emailExists = await getUserDataUtil({ email: newUserData.email }, [
+          "email",
+        ]);
+        if (emailExists) {
+          return res.status(400).send({ errMsg: "email already taken" });
+        }
+      }
       // it can be done only when current password is present
       if (newUserData.hasOwnProperty("currentPassword")) {
         let data = await getUserDataUtil({ id: sellerId }, ["password"]);
