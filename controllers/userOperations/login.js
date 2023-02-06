@@ -1,6 +1,10 @@
 const bcrypt = require("bcrypt");
 
-const { generateToken, getUserDataUtil } = require("./userUtility");
+const {
+  generateToken,
+  getUserDataUtil,
+  updateUserDataUtil,
+} = require("./userUtility");
 
 handleUserLogin = async (req, res) => {
   try {
@@ -10,6 +14,7 @@ handleUserLogin = async (req, res) => {
       "id",
       "firstName",
       "password",
+      "active",
     ]);
     if (!data) {
       return res.status(400).send({ errMsg: "Seller Does not exists" });
@@ -17,6 +22,11 @@ handleUserLogin = async (req, res) => {
 
     let status = await bcrypt.compare(password, data.password);
     if (status) {
+      // active comes as 0(false) 1(true) in sequelize
+      // setting user active if deactivated
+      if (!data.active) {
+        updateUserDataUtil({ id: data.id }, { active: true });
+      }
       let token = await generateToken({ id: data.id }, "1h");
       console.log(token);
       res.status(200).send({ token });

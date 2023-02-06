@@ -17,6 +17,9 @@ const {
 const {
   handleUserUpdate,
 } = require("../controllers/userOperations/updateUserData");
+const {
+  handleUserDeactivate,
+} = require("../controllers/userOperations/deactivateUser");
 // ********************* User Operations *******************
 
 // user registeration -change karan
@@ -43,9 +46,8 @@ router.put("/updateUser", sellerAuth, async (req, res, next) => {
   handleUserUpdate(req, res);
 });
 
-router.post("/test", (req, res) => {
-  console.log(req.body);
-  res.send("ok");
+router.post("/deativateUser", sellerAuth, (req, res) => {
+  handleUserDeactivate(req, res);
 });
 
 module.exports = router;

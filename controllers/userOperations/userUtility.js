@@ -21,10 +21,10 @@ exports.generateToken = generateToken;
 
 // get user data
 // id - search based on which id, attr - list of attributes -([*] or ['a','b'])
-async function getUserDataUtil(filterObj, attr) {
+async function getUserDataUtil(filterObj, attrArr) {
   let data = await Seller.findOne({
     where: filterObj,
-    attributes: attr,
+    attributes: attrArr,
     raw: true,
   });
   return data;
