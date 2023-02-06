@@ -22,6 +22,7 @@ async function storeSellerDetails(req) {
     address: sellerData.street,
     city: sellerData.city,
     mobile: sellerData.phone,
+    countryCode: sellerData.countryCode,
     email: sellerData.email,
     password: sellerData.password,
     active: true,
