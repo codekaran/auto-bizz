@@ -54,7 +54,7 @@ router.delete("/ad", auth, sellerAuth, (req, res) => {
 });
 
 //
-router.get("/query", (req, res) => {
+router.post("/query", (req, res) => {
   queryAds(req, res);
 });
 
