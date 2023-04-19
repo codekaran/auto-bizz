@@ -35,7 +35,7 @@ handleUserLogin = async (req, res) => {
       res.status(401).send({ errMsg: "password error" });
     }
   } catch (err) {
-    res.status(500).send("Something went wrong");
+    res.status(500).send({ errMsg: "Something went wrong" });
     console.log(err);
   }
 };

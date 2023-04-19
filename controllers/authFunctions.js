@@ -28,34 +28,16 @@ exports.auth = auth;
 const sellerAuth = async (req, res, next) => {
   const token = req.header("x-auth-token");
   if (!token) {
-    return res.status(401).json({ msg: "no token auth denied" });
+    return res.status(401).json({ errMsg: "no token auth denied" });
   }
   try {
     console.log("Checking the seller");
-
-    //unsecure as random id can be inserted
-    // let sellerId = req.params.sellerId;
-
-    // //secure due to randomness and also not in URL
-
-    // //no need to check seller as the token is signed
-    // let sellerExists = await utils.idExists(sellerId, Seller);
-
-    // //code for old implementation
-    // if (sellerExists) {
-    //   console.log("Seller exists");
-    //   next();
-    // } else {
-    //   res.send("Seller Id does not exists").status(400);
-    // }
-
-    //secure code token
     const decoded = jwt.verify(token, process.env.jwt_secret);
     req.sellerId = decoded.id;
     next();
   } catch (error) {
     console.log(error);
-    res.status(401).json({ msg: "invalid token" });
+    res.status(401).json({ errMsg: "invalid token" });
   }
 };
 

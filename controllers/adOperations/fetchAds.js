@@ -43,7 +43,7 @@ const fetchSellerAds = async (req, res) => {
     res.status(200).send(data);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ msg: "Somethig  went wrong" });
+    res.status(500).json({ msg: "Something  went wrong" });
   }
 };
 exports.fetchSellerAds = fetchSellerAds;
@@ -51,33 +51,16 @@ exports.fetchSellerAds = fetchSellerAds;
 // ***********************  returns /all ads *************************20220720163528423
 const fetchAllAds = async (req, res) => {
   try {
-    console.log("fetch all ads");
     let data = {};
     data = await db.fetchAllAds();
-    // const s3 = new AWS.S3({ signatureVersion: "v4", region: "eu-central-1" });
+    const s3 = new AWS.S3({ signatureVersion: "v4", region: "eu-central-1" });
     for (let record of data) {
       record.images = await getPresignedURL(record.images);
-      // console.log(record.images);
-      // let signedURLImages = [];
-      // for (let image of record.images) {
-      //   // extracting the image name from url
-      //   let imageName = image.split("/").pop();
-      //   let out = await s3.getSignedUrl("getObject", {
-      //     Bucket: "autobizz",
-      //     Key: imageName,
-      //     Expires: 5,
-      //   });
-      //   signedURLImages.push(out);
-      //   console.log(out);
-      // }
-      // record.images = signedURLImages;
     }
-    console.log(data);
-
     res.status(200).send(data);
   } catch (error) {
     console.log(error);
-    res.status(200).send("Somethig  went wrong");
+    res.status(500).send("Somethig  went wrong");
   }
 };
 exports.fetchAllAds = fetchAllAds;
