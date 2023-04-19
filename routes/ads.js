@@ -18,6 +18,7 @@ const {
 const { deleteSellerAds } = require("../controllers/adOperations/deleteAds");
 const { fetchAllAds } = require("../controllers/adOperations/fetchAds");
 const { S3 } = require("aws-sdk");
+const { queryAds } = require("../controllers/adOperations/queryAds");
 
 // ********************* Ad Operations *******************
 
@@ -30,12 +31,12 @@ router.post("/:sellerId/bulkads", auth, (req, res) => {
 router.post("/ads", auth, sellerAuth, (req, res) => {
   handleAdUpload(req, res);
 });
-//----route change karan
+
 // fetch  single ad
 router.get("/ad/:adId", auth, (req, res) => {
   fetchSingleAd(req, res);
 });
-//--route change karan
+
 // fetch ads of a user
 // protected
 router.get("/userAds", sellerAuth, (req, res) => {
@@ -50,6 +51,11 @@ router.get("/ads", auth, (req, res) => {
 // delete ad this is mongo // need to work in this.
 router.delete("/ad", auth, sellerAuth, (req, res) => {
   deleteSellerAds(req, res);
+});
+
+//
+router.get("/query", (req, res) => {
+  queryAds(req, res);
 });
 
 router.get("/test", async (req, res) => {
