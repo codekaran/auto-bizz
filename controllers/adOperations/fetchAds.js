@@ -1,22 +1,8 @@
 const db = require("../../data/databaseHandle");
 const { recordExists } = require("../../helperFunctions/utility");
 const AWS = require("aws-sdk");
+const { getPresignedURL } = require("./adUtility");
 
-const getPresignedURL = async (imageUrl) => {
-  let signedURLImages = [];
-  const s3 = new AWS.S3({ signatureVersion: "v4", region: "eu-central-1" });
-  for (let image of imageUrl) {
-    // extracting the image name from url
-    let imageName = image.split("/").pop();
-    let out = await s3.getSignedUrl("getObject", {
-      Bucket: "autobizz",
-      Key: imageName,
-      Expires: 3600,
-    });
-    signedURLImages.push(out);
-  }
-  return signedURLImages;
-};
 // ***********************  returns all ad *************************
 const fetchSingleAd = async (req, res) => {
   try {

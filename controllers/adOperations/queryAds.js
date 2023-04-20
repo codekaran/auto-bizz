@@ -1,6 +1,7 @@
 const adColumns = require("../constants/adColumns");
 const { Op, where } = require("sequelize");
 const AD = require("../../models/ad");
+const { getPresignedURL } = require("./adUtility");
 
 // ***********************  returns ads based on search params *************************
 // max should be greater, handle null
@@ -29,6 +30,12 @@ const queryAds = async (req, res) => {
     console.log(searchParamsArr);
     let whereClause = { where: { [Op.and]: searchParamsArr } };
     let data = await AD.findAll({ ...whereClause, raw: true });
+
+    for (let record of data) {
+      let imgArr = record.images.split(",");
+      record.images = await getPresignedURL(imgArr);
+    }
+
     console.log(data);
     res.status(200).send({ msg: data });
   } catch (error) {

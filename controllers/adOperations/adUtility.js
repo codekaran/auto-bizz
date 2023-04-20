@@ -4,6 +4,8 @@ const db = require("../../data/databaseHandle");
 const AD = require("../../models/ad");
 const s3 = require("../../helperFunctions/s3_file_upload");
 
+const AWS = require("aws-sdk");
+
 // uplaod images of the form contains image as well.
 const uploadImages = async (req, sellerId) => {
   let imagesForS3 = [];
@@ -68,3 +70,21 @@ const adUploadCommonLogic = async (res, req, adData, uploadType) => {
 };
 
 exports.adUploadCommonLogic = adUploadCommonLogic;
+
+// pass image list to presigned urls
+const getPresignedURL = async (imageUrl) => {
+  let signedURLImages = [];
+  const s3 = new AWS.S3({ signatureVersion: "v4", region: "eu-central-1" });
+  for (let image of imageUrl) {
+    // extracting the image name from url
+    let imageName = image.split("/").pop();
+    let out = await s3.getSignedUrl("getObject", {
+      Bucket: "autobizz",
+      Key: imageName,
+      Expires: 3600,
+    });
+    signedURLImages.push(out);
+  }
+  return signedURLImages;
+};
+exports.getPresignedURL = getPresignedURL;
